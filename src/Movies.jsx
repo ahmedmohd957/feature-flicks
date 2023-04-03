@@ -84,17 +84,13 @@ export default function Movies() {
         <>
             <NavBar />
             <Container>
-                <Row md={4} className='mb-4'>
-                    <Col>
-                        <Form.Group>
-                            <Form.Label>Select Category</Form.Label>
-                            <Form.Select value={selectedCategory} onChange={(e) => handleCategoryChange(e.target.value)}>
-                                <option value={'All'}>All</option>
-                                {categories.map(category => <option value={category}>{category}</option>)}
-                            </Form.Select>
-                        </Form.Group>
-                    </Col>
-                </Row>
+                <Form.Group style={{ width: '12rem' }} className='mb-4'>
+                    <Form.Label>Select Category</Form.Label>
+                    <Form.Select value={selectedCategory} onChange={(e) => handleCategoryChange(e.target.value)}>
+                        <option value={'All'}>All</option>
+                        {categories.map(category => <option value={category}>{category}</option>)}
+                    </Form.Select>
+                </Form.Group>
                 {[...filteredMoviesByDate].map(([date, movies]) => (
                     <div key={date}>
                         <h3 className='mb-3'>{format(new Date(date), 'EEE, dd MMM yyy')}</h3>
