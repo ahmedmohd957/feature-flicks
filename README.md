@@ -9,3 +9,5 @@ The app consists of three components:
 **Movies.jsx:** This component is responsible for displaying the list of movies grouped by screening date. It fetches the movies and screenings data from the server, groups the movies by date, and sorts them by time. It also allows the user to filter movies by category. The component uses useStates custom hook to manage the state.
 
 **Movie.jsx:** This component displays a single movie on the movie listing page. It is used by the Movies.jsx component.
+
+**MovieDetail.jsx:** This component displays details of a single movie
