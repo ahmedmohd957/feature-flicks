@@ -1,10 +1,22 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Card from 'react-bootstrap/Card';
-import { format } from 'date-fns';
-
+import { format, utcToZonedTime } from 'date-fns-tz';
 
 const Movie = ({ movie }) => {
+
+  function formatMovieDate(date) {
+    const zonedDate = utcToZonedTime(date, 'UTC');
+    const formattedDate = format(zonedDate, 'dd MMM yyy');
+    return formattedDate;
+  }
+
+  function formatMovieTime(date) {
+    const zonedDate = utcToZonedTime(date, 'UTC');
+    const formattedTime = format(zonedDate, 'HH:mm');
+    return formattedTime;
+  }
+
   return (
     <Link to={'/movie-detail/' + movie.slug}>
         <Card className='movie'>
@@ -18,7 +30,7 @@ const Movie = ({ movie }) => {
               {Math.floor(movie.description.length / 60)}h {movie.description.length % 60}min
             </Card.Text>
             <Card.Text>
-              {format(new Date(movie.screening.time), 'dd MMM yyy')}, {format(new Date(movie.screening.time), 'HH:mm')}
+              {formatMovieDate(new Date(movie.screening.time))}, {formatMovieTime(new Date(movie.screening.time))}
             </Card.Text>
           </Card.Body>
         </Card>

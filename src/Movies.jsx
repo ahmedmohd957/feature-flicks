@@ -4,7 +4,7 @@ import { useStates } from './utilities/states';
 import { kebabify } from './utilities/kebabify';
 import Movie from './Movie';
 import { Container, Row, Col, Form } from 'react-bootstrap/';
-import { format } from 'date-fns';
+import { format } from 'date-fns-tz';
 import NavBar from './Navbar';
 
 export default function Movies() {
@@ -35,6 +35,10 @@ export default function Movies() {
                 moviesByDate.set(date, []);
             }
             moviesByDate.get(date).push(movie);
+        }
+        // sort the movies by time
+        for (let [date, movies] of moviesByDate) {
+            movies.sort((a, b) => new Date(a.screening.time) - new Date(b.screening.time));
         }
         // store the movies in our state variable
         s.movies = movies;
@@ -85,7 +89,7 @@ export default function Movies() {
                         <Form.Group>
                             <Form.Label>Select Category</Form.Label>
                             <Form.Select value={selectedCategory} onChange={(e) => handleCategoryChange(e.target.value)}>
-                                <option value={null}>All</option>
+                                <option value={'All'}>All</option>
                                 {categories.map(category => <option value={category}>{category}</option>)}
                             </Form.Select>
                         </Form.Group>
