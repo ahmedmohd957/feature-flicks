@@ -10,6 +10,10 @@ export default function Movies() {
         movies: [],
     });
     const [moviesByDate, setMoviesByDate] = useState(new Map());
+    const [filteredMoviesByDate, SetFilteredMoviesByDate] = useState(new Map());
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [categories, setCategories] = useState([]);
+
 
     useEffect(() => {
         (async () => {
@@ -35,12 +39,52 @@ export default function Movies() {
         s.movies = movies;
         // store the movies grouped by date in our state variable
         setMoviesByDate(moviesByDate);
+        SetFilteredMoviesByDate(moviesByDate);
+        getCategories(moviesByDate);
         })();
     }, []);
 
+    function getCategories(moviesByDate) {
+        const categoriesSet = new Set();
+        for (let [date, movies] of moviesByDate) {
+            const movieCategories = movies.flatMap(movie => movie.description.categories);
+            for (let category of movieCategories) {
+                categoriesSet.add(category);
+            }
+        }
+        const categoriesArr = Array.from(categoriesSet);
+        setCategories(categoriesArr);
+    }
+
+    const handleCategoryChange = (category) => {
+        setSelectedCategory(category);
+        if (category === "All") {
+            SetFilteredMoviesByDate(moviesByDate);
+        } else {
+            const t = new Map();
+            for (let [date, movies] of moviesByDate) {
+                let filteredMovies = movies.filter(movie => movie.description.categories.includes(category));
+                t.set(date, filteredMovies);
+            }
+            for (let [date, movies] of t) {
+                if (movies.length === 0) {
+                    t.delete(date);
+                }
+            }
+            SetFilteredMoviesByDate(t);
+        }
+    }
+
     return (
         <>
-        {[...moviesByDate].map(([date, movies]) => (
+        <div>
+            <label htmlFor="category-select">Select a category:</label>
+            <select id="category-select" value={selectedCategory} onChange={(e) => handleCategoryChange(e.target.value)}>
+                <option value={null}>All</option>
+                {categories.map(category => <option value={category}>{category}</option>)}
+            </select>
+        </div>
+        {[...filteredMoviesByDate].map(([date, movies]) => (
             <section key={date}>
             <h2>{date}</h2>
             {movies.map(movie => (

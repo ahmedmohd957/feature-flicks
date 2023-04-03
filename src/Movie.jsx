@@ -6,6 +6,9 @@ const Movie = ({ movie }) => {
     <Link to={'/movie-detail/' + movie.slug}>
         <div className="movie">
             <h3>{movie.title}</h3>
+            {movie.description.categories.map((category) => (
+              <span>{category}, </span>
+            ))}
             <p>{new Date(movie.screening.time).toDateString()} {new Date(movie.screening.time).toLocaleTimeString()}</p>
             <img src={'https://cinema-rest.nodehill.se' + movie.description.posterImage} />
             <p>Length {movie.description.length}</p>
