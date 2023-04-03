@@ -3,15 +3,16 @@ import { useState } from 'react';
 import { useStates } from './utilities/states';
 import { kebabify } from './utilities/kebabify';
 import Movie from './Movie';
-import { Container, Row, Col, Form, Navbar } from 'react-bootstrap/';
+import { Container, Row, Col, Form } from 'react-bootstrap/';
 import { format } from 'date-fns';
+import NavBar from './Navbar';
 
 export default function Movies() {
 
     const s = useStates('main', { movies: [] });
     const [moviesByDate, setMoviesByDate] = useState(new Map());
     const [filteredMoviesByDate, SetFilteredMoviesByDate] = useState(new Map());
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState("");
     const [categories, setCategories] = useState([]);
 
 
@@ -77,36 +78,32 @@ export default function Movies() {
 
     return (
         <>
-        <Navbar bg="dark" variant="dark" className='mb-4'>
+            <NavBar />
             <Container>
-                <Navbar.Brand>Feature Flicks</Navbar.Brand>
+                <Row md={4} className='mb-4'>
+                    <Col>
+                        <Form.Group>
+                            <Form.Label>Select Category</Form.Label>
+                            <Form.Select value={selectedCategory} onChange={(e) => handleCategoryChange(e.target.value)}>
+                                <option value={null}>All</option>
+                                {categories.map(category => <option value={category}>{category}</option>)}
+                            </Form.Select>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                {[...filteredMoviesByDate].map(([date, movies]) => (
+                    <div key={date}>
+                        <h3 className='mb-3'>{format(new Date(date), 'EEE, dd MMM yyy')}</h3>
+                        <Row md={4} lg={4} xs={2}>
+                            {movies.map(movie => (
+                                <Col className='mb-4'>
+                                    <Movie key={movie.id} movie={movie} />
+                                </Col>
+                            ))}
+                        </Row>
+                    </div>
+                ))}
             </Container>
-        </Navbar>
-        <Container>
-            <Row md={4} className='mb-4'>
-                <Col>
-                    <Form.Group>
-                        <Form.Label>Select Category</Form.Label>
-                        <Form.Select value={selectedCategory} onChange={(e) => handleCategoryChange(e.target.value)}>
-                            <option value={null}>All</option>
-                            {categories.map(category => <option value={category}>{category}</option>)}
-                        </Form.Select>
-                    </Form.Group>
-                </Col>
-            </Row>
-            {[...filteredMoviesByDate].map(([date, movies]) => (
-                <div key={date}>
-                    <h2>{format(new Date(date), 'EEE, dd MMM yyy')}</h2>
-                    <Row md={4} lg={4} xs={2}>
-                        {movies.map(movie => (
-                            <Col className='mb-4'>
-                                <Movie key={movie.id} movie={movie} />
-                            </Col>
-                        ))}
-                    </Row>
-                </div>
-            ))}
-        </Container>
         </>
     );
 }
